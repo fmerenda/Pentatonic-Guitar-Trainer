@@ -1,0 +1,53 @@
+def play_game(self, position: str) -> None:
+    # ... [earlier part of method stays the same until the instructions] ...
+    
+    print("\nInstructions:")
+-   print("1. Four metronome clicks for count-in")
+-   print("2. Start playing on the 5th click")
++   print("1. You will hear four count-in clicks")
++   print("2. Start playing on the fifth click")
+    print("3. Play each note with the metronome")
+    print(f"4. Current tempo: {self.current_bpm} BPM")
+    
+    # ... [middle part stays the same until countdown] ...
+    
+    # Count in
+    for i in range(3, 0, -1):
+        print(f"{i}...")
+        time.sleep(1)
+-   print("Start playing on the first click!")
++   print("Start playing on the fifth click!")
+    
+    # ... [middle part stays the same until note comparison] ...
+    
+    for detected, expected in zip(notes_detected, expected_notes):
+        if detected is not None:
+            ratio = detected / expected.frequency
+            semitone_distance = abs(12 * np.log2(ratio))
+            
+            if semitone_distance <= self.FREQUENCY_TOLERANCE:
+                correct_notes += 1
+                print(f"✓ Correct note: {expected.name}")
+            else:
+-               print(f"✗ Expected {expected.name} ({expected.frequency:.1f}Hz), "
+-                     f"got {detected:.1f}Hz")
++               # Find closest note name for the detected frequency
++               detected_note = self.find_closest_note(detected)
++               print(f"✗ Expected {expected.name}, got {detected_note}")
+
+# New helper method to find note names
+def find_closest_note(self, frequency: float) -> str:
+    """Find the closest note name for a given frequency."""
+    # A4 = 440 Hz
+    # Calculate number of semitones from A4
+    semitones = 12 * np.log2(frequency / 440.0)
+    # Round to nearest semitone
+    semitones = round(semitones)
+    
+    # Note names starting from A
+    notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
+    # Calculate octave and note index
+    octave = 4 + (semitones + 9) // 12  # +9 because we start from A
+    note_idx = (semitones + 9) % 12
+    
+    return f"{notes[note_idx]}{octave}"
